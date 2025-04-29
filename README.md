@@ -1,125 +1,111 @@
 # Multi-threaded Web Server
 
-This project is a simple multi-threaded web server implemented in Python using socket programming. It handles multiple HTTP GET requests concurrently, serves static files from the local directory, logs requests to a file, and returns appropriate HTTP responses, including 404 errors for non-existent files.
+## Description
 
-## Features
-
-- **Concurrent Request Handling**: Uses multi-threading to process multiple client connections simultaneously.
-- **Static File Serving**: Serves files (e.g., HTML, images) from the script’s directory.
-- **Request Logging**: Logs client IP, timestamp, request line, and status code to `webserver.log`.
-- **Error Handling**: Returns 404 Not Found for missing files and 405 Method Not Allowed for non-GET requests.
+This project implements a simple multi-threaded web server using Python's socket programming. The server supports HTTP GET and HEAD requests, serves files from the current directory, and logs requests to `server.log`. It is designed to handle multiple client connections concurrently, making it suitable for processing simultaneous HTTP requests from browsers or other clients. The server also handles various HTTP response statuses (e.g., 200 OK, 404 Not Found) and supports persistent and non-persistent connections.
 
 ## Requirements
 
 - [Python 3.6 or later](https://www.python.org/downloads/)
 
-No external libraries are required, as the server uses standard Python modules (`socket`, `threading`, `os`, `time`, `mimetypes`).
+The program relies on standard Python libraries, including `socket`, `threading`, `os`, `datetime`, `mimetypes`, `email.utils`, and `logging`. No external dependencies are required.
 
-## Setup
+## Usage
 
-1. **Install Python**: Ensure [Python 3.6 or later](https://www.python.org/downloads/) is installed on your system. Verify by running `python --version` in a terminal.
-2. **Prepare the Server Script**: Save the server script (e.g., `server.py`) in a directory of your choice.
-3. **Create HTML Files**: Place static files, such as `index.html`, in the same directory as the script. For example, create `index.html` with:
+**Note:** This is a Python program and does not require compilation. It can be run directly using the Python interpreter.
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome</title>
-</head>
-<body>
-    <h1>Welcome to My Web Server</h1>
-    <p>This is a simple web server built with Python.</p>
-</body>
-</html>
-```
+1. **Prepare the server script:**
 
-You can add other files, like `about.html` or images in subdirectories (e.g., `images/logo.png`), to test additional functionality.
+   - Save the provided code as `web_server.py`.
 
-## Running the Server
+2. **Set up files to serve:**
 
-1. **Open a Terminal**: Use a terminal or command prompt on your operating system.
-2. **Navigate to the Directory**: Change to the directory containing `server.py` using `cd /path/to/directory`.
-3. **Start the Server**: Run the following command:
+   - Place the files you wish to serve (e.g., HTML, images) in the same directory as `web_server.py`.
+   - For testing, you can create a simple `index.html` file with content like `<h1>Hello, World!</h1>`.
 
-   ```bash
-   python server.py
-   ```
+3. **Run the server:**
 
-4. **Verify Server Start**: The server will start listening on `0.0.0.0:8080`. You should see a message like:
+   - Open a terminal and navigate to the directory containing `web_server.py`.
 
-   ```
-   服务器正在监听 0.0.0.0:8080
-   ```
-
-   This translates to "Server is listening on 0.0.0.0:8080".
-
-5. **Stop the Server**: To stop the server, press `Ctrl+C` in the terminal.
-
-## Accessing the Server
-
-1. **Local Access**:
-   - Open a web browser and navigate to `http://localhost:8080/`.
-   - You should see the content of `index.html` displayed.
-   - Access other files by specifying their paths, e.g., `http://localhost:8080/about.html`.
-
-2. **Command-Line Testing**:
-   - Use `curl` to test the server:
+   - Execute the following command:
 
      ```bash
-     curl http://localhost:8080/
+     python web_server.py
      ```
 
-     This should return the HTML content of `index.html`.
+   - The server will start and listen on [http://127.0.0.1:8080](http://127.0.0.1:8080).
 
-   - To test a 404 error:
+4. **Access the server:**
 
-     ```bash
-     curl http://localhost:8080/nonexistent.html
-     ```
+   - Open a web browser and navigate to [http://127.0.0.1:8080/<filename>](http://127.0.0.1:8080/), replacing `<filename>` with the name of the file you want to access.
+   - For example, [http://127.0.0.1:8080/index.html](http://127.0.0.1:8080/index.html) to access `index.html`.
 
-     This should return a 404 Not Found response.
+5. **Stop the server:**
 
-## Logging
+   - Press `Ctrl+C` in the terminal where the server is running.
 
-The server logs each request to `webserver.log` in the script’s directory. Each entry includes:
+## Testing
 
-- **Client IP Address**: The IP of the requesting client (e.g., `127.0.0.1`).
-- **Timestamp**: Formatted as `[DD/MMM/YYYY:HH:MM:SS +ZZZZ]`, e.g., `[29/Apr/2025:18:36:00 +0800]`.
-- **Request Line**: The full HTTP request, e.g., `GET / HTTP/1.1`.
-- **Status Code**: The HTTP response code, e.g., `200` for OK or `404` for Not Found.
+You can test the server using a web browser or command-line tools like `curl`. Below are example commands to verify different functionalities:
 
-Example log entry:
+- **Retrieve a file (GET request):**
 
-```
-127.0.0.1 - [29/Apr/2025:18:36:00 +0800] "GET / HTTP/1.1" 200
-```
+  ```bash
+  curl http://127.0.0.1:8080/index.html
+  ```
 
-The log file is appended to with each request, so it may grow over time. You can delete or archive it if needed.
+  This should return the content of `index.html` if it exists.
+
+- **Get headers only (HEAD request):**
+
+  ```bash
+  curl -I http://127.0.0.1:8080/index.html
+  ```
+
+  This returns the HTTP headers without the file content.
+
+- **Test 404 error:**
+
+  ```bash
+  curl http://127.0.0.1:8080/nonexistent.html
+  ```
+
+  This should return an HTML error page indicating "404 Not Found".
+
+- **Check logs:**
+
+  - View the `server.log` file in the same directory to see recorded requests. Each log entry includes the client IP, access time, requested file, and response status.
+
+- **Test concurrency:**
+
+  - Open multiple browser tabs or execute multiple `curl` commands simultaneously to verify that the server handles concurrent requests effectively.
+
+## Configuration
+
+- **Host and Port:**
+  - By default, the server listens on `127.0.0.1:8080` (localhost), which restricts access to the local machine.
+  - To make the server accessible from other machines, edit `web_server.py` and set `HOST = '0.0.0.0'`. Then, use the server's IP address instead of `127.0.0.1` (e.g., [http://<server-ip>:8080](http://<server-ip>:8080)).
+  - If port 8080 is in use, change the `PORT` variable in `web_server.py` to an available port (e.g., 8081).
+
+- **Log File:**
+  - Logs are written to `server.log`. To change the log file name or configuration, modify the `logging.basicConfig` call in `web_server.py`.
+
+## Additional Notes
+
+- **File Types:** The server uses Python's `mimetypes` module to automatically detect and serve various file types, including text files (e.g., HTML, CSS) and images (e.g., JPEG, PNG).
+- **Error Handling:** The server supports multiple HTTP response statuses, such as:
+  - 200 OK: Successful request.
+  - 304 Not Modified: File unchanged since last request.
+  - 400 Bad Request: Invalid request format.
+  - 403 Forbidden: File access denied.
+  - 404 Not Found: File does not exist.
+  - 501 Not Implemented: Unsupported HTTP method.
+- **Persistent Connections:** The server respects the `Connection` header, supporting both `keep-alive` (persistent) and `close` (non-persistent) connections.
+- **Security:** The server is intended for educational purposes and local testing. For production use, additional security measures (e.g., preventing path traversal attacks) would be needed.
 
 ## Troubleshooting
 
-| **Issue** | **Solution** |
-|-----------|--------------|
-| **Server doesn't start** | Check if port 8080 is in use by another process (`netstat -an | find "8080"` on Windows or `lsof -i :8080` on Linux). Change the port in `server.py` (e.g., to `8081`) if needed. |
-| **404 Not Found** | Verify that the requested file (e.g., `index.html`) exists in the script’s directory and the path is correct. |
-| **Blank page** | A blank page may indicate a 404 error with no content. Modify the server to return a custom 404 message, e.g., `<h1>404 Not Found</h1>`. |
-| **Cannot access from another machine** | Ensure the firewall allows incoming connections on port 8080. On Windows, run: <br> ```bash<br>netsh advfirewall firewall add rule name="Open Port 8080" dir=in action=allow protocol=TCP localport=8080<br>``` <br> Or use Windows Firewall with Advanced Security GUI. On Linux, run: <br> ```bash<br>sudo ufw allow 8080<br>``` <br> Also, check if the router blocks port 8080 or requires port forwarding. |
-
-## Server Messages
-
-The server outputs messages in Chinese. Key translations include:
-
-- `服务器正在监听 0.0.0.0:8080`: "Server is listening on 0.0.0.0:8080"
-- `接受来自 ('127.0.0.1', 12345) 的连接`: "Accepting connection from ('127.0.0.1', 12345)"
-- `处理客户端 ('127.0.0.1', 12345) 时出错: [error message]`: "Error processing client ('127.0.0.1', 12345): [error message]"
-
-To use English messages, modify the `print` statements in `server.py`.
-
-## Notes
-
-- The server only supports GET requests; other methods return a 405 Method Not Allowed response.
-- The root path (`/`) serves `index.html` by default.
-- File types are determined using the `mimetypes` module. Unknown types default to `application/octet-stream`.
-- The server is designed for educational purposes and may not handle production-level loads or security requirements.
+- **Port Conflict:** If you receive an error indicating that port 8080 is in use, try a different port by editing the `PORT` variable in `web_server.py`.
+- **File Not Found:** Ensure the requested files are in the same directory as `web_server.py`. The server serves files relative to its working directory.
+- **Access Denied:** If you encounter a 403 Forbidden error, check the file permissions to ensure they are readable.
+- **Testing from Other Machines:** If the server is not accessible from another machine, verify that `HOST` is set to `'0.0.0.0'` and that any firewalls allow traffic on the specified port.
