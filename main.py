@@ -37,7 +37,7 @@ def handle_client(client_socket, client_address):
             response = response.encode('utf-8') + content
             status = '200'
         except FileNotFoundError:
-            response = 'HTTP/1.0 404 Not Found\r\n\r\n'
+            response = 'HTTP/1.0 404 Not Found\r\nContent-Type: text/html\r\n\r\n<h1>404 Not Found</h1><p>Requesting file is not exist.</p>'
             response = response.encode('utf-8')
             status = '404'
         client_socket.sendall(response)
